@@ -21,6 +21,25 @@ void Initializing (void){
     LED_Init(B,4); // Buzzer
 }
 
+void Stop_Oven (void){
+    LED_OFF(F,1);
+    LED_OFF(F,2);
+    LED_OFF(F,3);
+    main ();
+}
+
+void Done_Oven (void){
+    for (int i = 0; i <= 3; i++)
+    {
+        LED_TGL(F,1);
+        LED_TGL(F,2);
+        LED_TGL(F,3);
+        LED_ON(B,4);
+        genericDelay(1000);
+    }
+    Stop_Oven();
+}
+
 
 void main (void){
 
@@ -257,25 +276,8 @@ void main (void){
 
                 default:
                     LCD_Send_String ("Wrong Input");    // IF USER ENTERED ELSE (A,B,C,D)
+                    Stop_Oven();
             }
         }
     }
 }
-
-void Stop_Oven (void){
-    LED_OFF(F,1);
-    LED_OFF(F,2);
-    LED_OFF(F,3);
-}
-
-void Done_Oven (void){
-    for (int i = 0; i <= 3; i++)
-    {
-        LED_TGL(F,1);
-        LED_TGL(F,2);
-        LED_TGL(F,3);
-        LED_ON(B,4);
-        genericDelay(1000);
-    }
-}
-
