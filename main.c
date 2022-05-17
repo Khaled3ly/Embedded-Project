@@ -34,8 +34,8 @@ void Done_Oven (void){
         LED_TGL(F,1);
         LED_TGL(F,2);
         LED_TGL(F,3);
-        LED_ON(B,4);
-        genericDelay(1000);
+        LED_TGL(B,4);
+        genericDelay(500);
     }
     Stop_Oven();
 }
