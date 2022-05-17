@@ -21,6 +21,7 @@ void Initializing (void){
     LED_Init(B,4); // Buzzer
 }
 
+
 void Stop_Oven (void){
     LED_OFF(F,1);
     LED_OFF(F,2);
@@ -83,11 +84,14 @@ void main (void){
                             genericDelay(1000);   
                         }
                         else if (Switch_Read(F,4) == '0')    // IF SWITCH 1 (PAUSE) IS PRESSED FIRST TIME
-                        {                          
-/*     3                    LED_TGL(F,1);
-                            LED_TGL(F,2);
-                            LED_TGL(F,3);      LEDS NEEDS TO KEEP TOGLING WHILE PAUSED  (APPLY TO OTHER CASES)*/
-                            genericDelay(2000);             // WAIT SOME TIME BEFORE READING SECOND TIME SWITCH 1 PRESS
+                        {   
+                            while (Switch_Read(F,4) != '0' || Switch_Read(F,0) != '0')  // STAY IN THE LOOP AS LONG AS (STOP/START NOT PRESSED)
+                            {                        
+                                LED_TGL(F,1);
+                                LED_TGL(F,2);
+                                LED_TGL(F,3);      //LEDS KEEP TOGLING WHILE PAUSED  (APPLY TO OTHER CASES)
+                                genericDelay(500);
+                            }
                             if (Switch_Read(F,4) == '0')
                             {
                                 Stop_Oven ();               // IF SWITCH 1 (STOP) IS PRESSED SECOND TIME
@@ -142,7 +146,13 @@ void main (void){
                         }
                         else if (Switch_Read(F,4) == '0')    // IF SWITCH 1 (PAUSE) IS PRESSED FIRST TIME
                         {
-                            genericDelay(2000);             // WAIT SOME TIME BEFORE READING SECOND TIME SWITCH 1 PRESS
+                            while (Switch_Read(F,4) != '0' || Switch_Read(F,0) != '0')  // STAY IN THE LOOP AS LONG AS (STOP/START NOT PRESSED)
+                            {                        
+                                LED_TGL(F,1);
+                                LED_TGL(F,2);
+                                LED_TGL(F,3);      //LEDS KEEP TOGLING WHILE PAUSED  (APPLY TO OTHER CASES)
+                                genericDelay(500);
+                            }
                             if (Switch_Read(F,4) == '0')
                             {
                                 Stop_Oven ();               // IF SWITCH 1 (STOP) IS PRESSED SECOND TIME
@@ -196,7 +206,13 @@ void main (void){
                         }
                         else if (Switch_Read(F,4) == '0')    // IF SWITCH 1 (PAUSE) IS PRESSED FIRST TIME
                         {
-                            genericDelay(2000);             // WAIT SOME TIME BEFORE READING SECOND TIME SWITCH 1 PRESS
+                            while (Switch_Read(F,4) != '0' || Switch_Read(F,0) != '0')  // STAY IN THE LOOP AS LONG AS (STOP/START NOT PRESSED)
+                            {                        
+                                LED_TGL(F,1);
+                                LED_TGL(F,2);
+                                LED_TGL(F,3);      //LEDS KEEP TOGLING WHILE PAUSED  (APPLY TO OTHER CASES)
+                                genericDelay(500);
+                            }
                             if (Switch_Read(F,4) == '0')
                             {
                                 Stop_Oven ();               // IF SWITCH 1 (STOP) IS PRESSED SECOND TIME
@@ -260,7 +276,13 @@ void main (void){
                         }
                         else if (Switch_Read(F,4) == '0')    // IF SWITCH 1 (PAUSE) IS PRESSED FIRST TIME
                         {
-                            genericDelay(2000);             // WAIT SOME TIME BEFORE READING SECOND TIME SWITCH 1 PRESS
+                            while (Switch_Read(F,4) != '0' || Switch_Read(F,0) != '0')  // STAY IN THE LOOP AS LONG AS (STOP/START NOT PRESSED)
+                            {                        
+                                LED_TGL(F,1);
+                                LED_TGL(F,2);
+                                LED_TGL(F,3);      //LEDS KEEP TOGLING WHILE PAUSED  (APPLY TO OTHER CASES)
+                                genericDelay(500);
+                            }
                             if (Switch_Read(F,4) == '0')
                             {
                                 Stop_Oven ();               // IF SWITCH 1 (STOP) IS PRESSED SECOND TIME
