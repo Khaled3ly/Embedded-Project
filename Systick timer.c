@@ -5,7 +5,7 @@ void SysTick_wait(unsigned long delay){
  	while((NVIC_ST_CTRL_R&0x00010000)==0){} 
 } 
  
-void genericDelay(unsigned long time){ 
+void delay_ms(unsigned long time){ 
  	int i; 
  	for(i=0;i<time;i++){ 
  	 	SysTick_wait(16000); //1ms 
