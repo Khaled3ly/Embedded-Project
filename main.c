@@ -198,205 +198,164 @@ int main(void)
                 value = digit + last_char * 10;
                 _itoa(value, &arr[counter], 10);
                 cout << arr << endl;
-                last_char = value;
-                numberofdigits++;
-            }
-            if (numberofdigits > 2)
-            {
-                arr[2] = ':';
-            }
-            cout << arr << endl;
-            current_state = switch_state_machine(1);
-           
-         }
-     
-      else if (current_state == state_oven)
-        {
-            LED_ON('F',1);
-            LED_ON('F',2);
-            LED_ON('F',3);
-
-            if (last_letter == 'A')
-            {
-				        int delay = 60;
-                while (--delay)
-                {
-                    current_state = switch_state_machine(0);
-                    if (current_state == state_oven_pause)
-                    {
-                        pause_time = delay;
-                    break;
-                    }
-                    else if (current_state == state_stopped)
-                    {
-                        break;
-                    }
-                    LCD_Move_Cursor(2,1);
-                    LCD_Send_String ("Time Left:");
-                    LCD_Move_Cursor(2,12);
-                    // Convert Delay from integer to char to print on LCD
-                    LCD_Send_String(delay);
-				             genericDelay(1000);
-					           LCD_CLR_Screen(); 
-                }
-                
-            }
-						
-						
-         else if (last_letter == 'B')
-            {
-							    
-           int value = (5 * 60 * last_kilo) / 10;
-				            while (--value)
-                {	   
-				    current_state = switch_state_machine(0);
-                    if (current_state == state_oven_pause)
-                    {
-                        pause_time = value;
-                        break;
-                    }
-                    else if (current_state == state_stopped)
-                    {
-                        break;
-                    }
-                LCD_Move_Cursor(2,1);
-                LCD_Send_String ("Time Left: ");
-                LCD_Move_Cursor(2,12); 
-                // Convert Value from integer to char to print on LCD 
-				         genericDelay(1000);
-				          LCD_CLR_Screen();
-                }
-                 
-            }
-						
-						
-         else if (last_letter == 'C')
-            {
-                int value = (2 * 60 * last_kilo) / 10;
-				           while (--value)
-                {
-                    current_state = switch_state_machine(0);
-                    if (current_state == state_oven_pause)
-                    {
-                        pause_time = value;
-                        break;
-                    }
-                    else if (current_state == state_stopped)
-                    {
-                        break;
-                    }
-                LCD_Move_Cursor(2,1);
-                LCD_Send_String ("Time Left: ");
-                LCD_Move_Cursor(2,12); 
-                // Convert Value from integer to char to print on LCD 
-                genericDelay(1000);
-                LCD_CLR_Screen();
-                }
-            }
-						
-						
-						
-          else if (last_letter == 'D')
-            {
-                // d
-            }
-						   
-            current_state = state_stopped;
-
+		else if (current_state == state_oven) {
+      LED_ON('F', 1);
+      LED_ON('F', 2);
+      LED_ON('F', 3);
+      if (last_letter == 'A') {
+				int value;
+        for (value = 60; value > 0; value--){
+          if (Switch_Read('F', 4) == 0){     // Pause
+					current_state = switch_state_machine(0);
+          if (current_state == state_oven_pause) {
+           pause_time = value;
+           break;
+						}
+          }
+          LCD_Send_CMD(0x01);
+          LCD_Send_String(" Time Left: ");
+          LCD_Move_Cursor(1, 11);
+					LCD_Send_Int(value);
+          delay_ms(1000);
+          LCD_Send_CMD(0x01);
+					if (Switch_Read('A', 2) != 0){   // Door
+					pause_time = value;
+					current_state = switch_state_machine(0);
+					break;
+					}
+					if (value == 1){
+						current_state = state_stopped;
+					}
         }
- 
-				
-				
-			
-				
-        else if (current_state == state_oven_pause)
-        {
-					GPIO_PORTF_DATA_R=GPIO_PORTF_DATA_R ^0x0E;
-            
-					// oven pause
-            // stop timer
- 
-            if (last_letter == 'a')
-            {
- 
-                current_state = switch_state_machine(0);
-            }
-            else if (last_letter == 'b')
-            {
- 
-            }
-            else if (last_letter == 'c')
-            {
- 
-            }
-            else
-            {
-                // d
-            }
-            current_state = switch_state_machine(0);
+      }
+			else if (last_letter == 'B') {
+				int value;
+        for (value = (30*last_kilo); value > 0; value--){
+          if (Switch_Read('F', 4) == 0){
+					current_state = switch_state_machine(0);
+          if (current_state == state_oven_pause) {
+           pause_time = value;
+           break;
+						}
+          }
+          LCD_Send_CMD(0x01);
+          LCD_Send_String(" Time Left: ");
+          LCD_Move_Cursor(1, 11);
+					LCD_Send_Int(value);
+          delay_ms(1000);
+          LCD_Send_CMD(0x01);
+					if (Switch_Read('A', 2) != 0){
+					pause_time = value;
+					current_state = switch_state_machine(0);
+					break;
+					}
+					if (value == 1){
+						current_state = state_stopped;
+					}
         }
- 
-
-				
-        else if (current_state == state_stopped)
-        {
-            for (i = 0; i<3; i++)
+      }
+			else if (last_letter == 'C') {
+				int value;
+        for (value = (12*last_kilo); value > 0; value--){
+          if (Switch_Read('F', 4) == 0){
+					current_state = switch_state_machine(0);
+          if (current_state == state_oven_pause) {
+           pause_time = value;
+           break;
+						}
+          }
+          LCD_Send_CMD(0x01);
+          LCD_Send_String(" Time Left: ");
+          LCD_Move_Cursor(1, 11);
+					LCD_Send_Int(value);
+          delay_ms(1000);
+          LCD_Send_CMD(0x01);
+					if (Switch_Read('A', 2) != 0){\
+					pause_time = value;
+					current_state = switch_state_machine(0);
+					break;
+					}
+					if (value == 1){
+						current_state = state_stopped;
+					}
+        }
+      }
+      else if (last_letter == 'D') {
+				  for (total_time; total_time > 0; total_time--){
+          if (Switch_Read('F', 4) == 0){     // Pause
+					current_state = switch_state_machine(0);
+          if (current_state == state_oven_pause) {
+           pause_time = total_time;
+           break;
+						}
+          }
+          LCD_Send_CMD(0x01);
+          LCD_Send_String(" Time Left: ");
+          LCD_Move_Cursor(1, 11);
+					LCD_Send_Int(total_time);
+          delay_ms(1000);
+          LCD_Send_CMD(0x01);
+					if (Switch_Read('A', 2) != 0){   // Door
+					pause_time = total_time;
+					current_state = switch_state_machine(0);
+					break;
+					}
+					if (total_time == 1){
+						current_state = state_stopped;
+					}
+        }
+     }
+    }
+    else if (current_state == state_oven_pause) {
+			while (current_state == state_oven_pause){
+        LED_TGL('F', 1);
+        LED_TGL('F', 2);
+        LED_TGL('F', 3);
+				LCD_Send_CMD(0x01);
+				LCD_Send_String(" Pause time :");
+				LCD_Send_Int(pause_time);
+				delay_ms(200);
+			if (Switch_Read('F', 4) == 0){
+				current_state = switch_state_machine(0);
+			}	
+			if (Switch_Read('F', 0) == 0){
+			current_state = switch_state_machine(3);
+			}	
+			}			
+		}
+		else if (current_state == state_oven_resume){
+			    for (pause_time; pause_time > 0; pause_time--){
+					LED_ON('F', 1);
+					LED_ON('F', 2);
+					LED_ON('F', 3);
+          LCD_Send_CMD(0x01);
+          LCD_Send_String(" Time Left: ");
+          LCD_Move_Cursor(1, 11);
+					LCD_Send_Int(pause_time);
+          delay_ms(1000);
+          LCD_Send_CMD(0x01);
+        }
+					current_state = state_stopped;
+		}
+				else if (current_state == state_stopped)
+        {	
+					LCD_Send_CMD(0x01);
+					LCD_Send_String(" Done !");
+            for (i = 0; i<6; i++)
             {
                 LED_TGL('F',1);
                 LED_TGL('F',2);
                 LED_TGL('F',3);
-                genericDelay(1000);
-                LED_ON('B',4); // Buzzer
+                delay_ms(500);
+                LED_TGL('E',5); // Buzzer
             }
-
+						LED_OFF('E',5);
+						LED_OFF('F',1);
+						LED_OFF('F',2);
+						LED_OFF('F',3);
           current_state = state_oven_operation;   ///current_state == state_oven_operation I SHOULD IT BE THERE
         }
  
         prev_state = current_state;
-    }
- 
-    
-    return 0;
+	}
 }
-		
-
-
-      int switch_state_machine(int start) ;
-{
-    int current_switch_state = 0;
-   if (sw_2_is_pressed && start != 0)
-     {
-        current_switch_state = state_oven;
- 
-     }
-   else if (sw_2_is_pressed && prev_state == state_oven_pause) //int prev_state = 0;
-     {
-        // get current time, display it
-        cout << "state previous is pause" << endl;
-     }
-   else
-     {
-        static int counter = 0;
- 
-        if (sw1_is_pressed)
-        {
-            counter++;
- 
-            if (counter == 1)
-            {
-                current_switch_state = state_oven_pause;
- 
-                // store current time
-            }
-            else if (counter == 2)
-            {
-                current_switch_state = state_oven_stop;
- 
-            }
-        }
-    }
- 
-    return current_switch_state;
-    // state machine switches
-}
- 
