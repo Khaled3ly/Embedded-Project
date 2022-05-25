@@ -1,6 +1,7 @@
 #include "LED.h"
 
 void LED_Init (unsigned char port_name, unsigned short int pin_number){
+	Port_Init(port_name);
 	Set_Pin_DIR (port_name, pin_number,1);	
 }
 
