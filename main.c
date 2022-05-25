@@ -4,11 +4,12 @@
 #include "Switch.h"
 
 
+
 #define state_init 0
-#define state_measurmenet 1 
-#define state_defrost_beef   2
+#define state_measurmenet 1
+#define state_defrost_beef 2
 #define state_defrost_chicken 3
-#define state_defrost   4
+#define state_defrost 4
 #define state_popcorn 5
 #define state_stopped 6
 #define state_cooking_time 7
@@ -20,184 +21,183 @@
 #define state_operation_pop 13
 #define state_operation_cooking_time 14
 #define state_operation_chicken 15
- 
-int sw_2_is_pressed = 1;
-int sw1_is_pressed = 1;
-int sw3_is_pressed = 1;
+#define state_oven_resume 16
+
 int current_state = state_oven_operation;
 int prev_state = 0;
 int pause_time;
-int i;
-#define state_init_1 0 
-#define state_1 1 
-int current_switch_state = state_init_1;
- 
- int switch_state_machine(int start) 
-   {
-    int current_switch_state = 0;
-   if (sw_2_is_pressed && start != 0)
-     {
-        current_switch_state = state_oven;
- 
-     }
-   else if (sw_2_is_pressed && prev_state == state_oven_pause) //int prev_state = 0;
-     {
-        // get current time, display it
-        cout << "state previous is pause" << endl;
-     }
-   else
-     {
-        static int counter = 0;
- 
-        if (sw1_is_pressed)
-        {
-            counter++;
- 
-            if (counter == 1)
-            {
-                current_switch_state = state_oven_pause;
- 
-                // store current time
-            }
-            else if (counter == 2)
-            {
-                current_switch_state = state_oven_stop;
- 
-            }
-        }
-    }
- 
-    return current_switch_state;
+int i, total_time;
+int last_kilo = 0;
+char last_letter = '0';
+unsigned char letter;
+unsigned char kilo, current_kilo;
+unsigned char time1, time2, time3, time4;
 
- // sw1 f4 , sw2 f0, sw3 B3
- 
-int switch_state_machine(int start);
-
-void Initializing (void){
-	Port_Init('F');
-    Keypad_Init(); // Initialized on Port D
-    LCD_Init(); 
-
-    LED_Init('F',1);   //set direction
-    LED_Init('F',2);
-    LED_Init('F',3);
-
-    Switch_Init('F',4); // Switch 1       //set direction
-    Switch_Init('F',0); // Switch 2
-    Switch_Init('B',3); // External Switch 3
-
-    LED_Init('D',4); // check pin  Buzzer
+int switch_state_machine(int start) {
+	static int counter = 1;
+  int current_switch_state = 0;
+	if (start == 1){
+		while ((Switch_Read('F', 0) != 0)){
+	
+		}
+		current_switch_state = state_oven;
+	}
+	else if (start == 0){
+		if (counter == 1){
+			current_switch_state = state_oven_pause;
+			counter ++;
+		}
+		else if (counter ==2){
+			current_switch_state = state_stopped;
+		}
+	}
+	else if (start == 3){
+		current_switch_state = state_oven_resume; 
+	}
+	return current_switch_state;
 }
 
 
 
-int main(void)
-{
-    Initializing();
+void Initialize (void){
+	LCD_Init();
+	Keypad_Init();
+	LED_Init('F',1);
+	LED_Init('F',2);
+	LED_Init('F',3);
+	LED_Init('E',5); // Buzzer
+	LED_OFF('E',5);
+	
+	Switch_Init('F',0);
+	Switch_Init('F',4);
+	Switch_Init('A',2);
+}
 
-    char last_kilo = '0';
-    char last_letter = '0';
-    while (Switch_Read('D',5) != 0){}
-    {
- 
-      if (current_state == state_oven_operation)
-        {
-            // oven operation
-            unsigned char letter = Keypad_Read();
- 
-              switch (letter) { 								// LOOK FOR KEYPAD INPUT
-              
-							case 'A':    
-							current_state = state_popcorn;
-               break;
-								
-               case 'B':  
-                current_state = state_defrost_beef;
-               break;
-            
-               case 'C':  
-               current_state = state_defrost_chicken;
-               break;
-            
-               case 'D':  
-               current_state = state_cooking_time;
-              break;
-           last_letter = letter;
-        }
-							
-				
- 
-    else if (current_state == state_popcorn)
-        {
-            
-        LCD_Send_String ("pop corn");
-			current_state = switch_state_machine(1);
-        }
-				
-				
-				
-     else if (current_state == state_defrost_beef)
-        {
-            LCD_Send_String ( "beef weight?" )
-            unsigned char kilo = Keypad_Read();
-            if (kilo > '0' && kilo < '10')
-            {
-				LCD_CLR_Screen();
-				LCD_Send_String ("beef weight: ");
-        LCD_Send_String(kilo);
-				genericDelay(2000);
-        LCD_CLR_Screen();
-				last_kilo = kilo;
-			
-            }
-            else
-            {  
-                LCD_CLR_Screen();
-                LCD_Send_String ("err");
-                genericDelay(2000);
-				        LCD_CLR_Screen()
-            }
-            current_state = switch_state_machine(1);
-        }
-				
-				
-				
-     else if (current_state == state_defrost_chicken)
-        {
-			     LCD_Send_String ("chicken weight?");
-            unsigned char kilo = keypad_read();
-                    if (kilo > '0' && kilo < '10')
-            {
-                LCD_CLR_Screen();
-				LCD_Send_String ("chicken weight: kilo");
-				genericDelay(2000);
-                LCD_CLR_Screen();
-				last_kilo = kilo;
-            }
-                     else
-              {
-				LCD_CLR_Screen();
-                LCD_Send_String ("err");
-                genericDelay(2000);
-				LCD_CLR_Screen();
-              }
-				current_state = switch_state_machine(1);
-            }
-			else if (current_state == state_cooking_time)
-        {
-                char arr[] = "00000";
-                int counter = 5;
-                int last_char = 0;
-                int value = 1;
-                int multiplier = 1;
-                int numberofdigits = 0;
-            while (counter-- != 0)
-            {
-                unsigned char letter = Keypad_Read();
-                int digit = letter - '0';
-                value = digit + last_char * 10;
-                _itoa(value, &arr[counter], 10);
-                cout << arr << endl;
+
+int main(void) {
+	Initialize();
+	
+  while (1)
+	{
+		
+    while (Switch_Read('A', 2) != 0) {
+				LCD_Send_CMD(0x01);
+				LCD_Send_String(" Close Door");
+			while (Switch_Read('A', 2) != 0){}
+		}
+  
+    if (current_state == state_oven_operation) {
+			LCD_Send_CMD(0x01);
+			LCD_Send_String(" Press A, B, C, D");
+			while (Keypad_Read()== 0xFF){}
+      letter = Keypad_Read();
+
+      switch (letter)
+
+      {
+        case 'A':
+					LCD_Send_CMD(0x01);
+          LCD_Send_String(" Popcorn");		
+					LCD_Move_Cursor(2,1);
+					LCD_Send_String("Press Start !");	
+          current_state = switch_state_machine(1);
+          break;
+
+        case 'B':
+					LCD_Send_CMD(0x01);
+          LCD_Send_String(" Beef Weight?");
+					delay_ms(200);
+				  while (Keypad_Read()== 0xFF){}
+					kilo = Keypad_Read();
+
+          if (kilo > '0' && kilo <= '9') {		
+            LCD_Send_CMD(0x01);
+            LCD_Send_String(" Beef Weight: ");
+						LCD_Send_Chr(kilo);
+            delay_ms(2000);
+            LCD_Send_CMD(0x01);
+						LCD_Send_String(" Press Start !");	
+            last_kilo = kilo - '0';
+						current_state = switch_state_machine(1);
+
+          } else {
+            LCD_Send_CMD(0x01);
+            LCD_Send_String(" err");
+            delay_ms(2000);
+            LCD_Send_CMD(0x01);
+						current_state = state_oven_operation;
+          }
+          break;
+
+        case 'C':
+					LCD_Send_CMD(0x01);
+          LCD_Send_String(" Chicken Weight?");
+					delay_ms(200);
+				  while (Keypad_Read()== 0xFF){}
+					kilo = Keypad_Read();
+
+          if (kilo > '0' && kilo <= '9') {		
+            LCD_Send_CMD(0x01);
+            LCD_Send_String(" Chicken Weight:");
+						LCD_Send_Chr(kilo);
+            delay_ms(2000);
+            LCD_Send_CMD(0x01);
+						LCD_Send_String(" Press Start !");	
+            last_kilo = kilo - '0';
+						current_state = switch_state_machine(1);
+
+          } else {
+            LCD_Send_CMD(0x01);
+            LCD_Send_String(" err");
+            delay_ms(2000);
+            LCD_Send_CMD(0x01);
+						current_state = state_oven_operation;
+          }
+          break;
+
+        case 'D':
+					LCD_Send_CMD(0x01);
+          LCD_Send_String(" Cooking Time?");
+					delay_ms(2000);
+					LCD_Send_CMD(0x01);
+					LCD_Send_String(" 00:0");
+				  while (Keypad_Read()== 0xFF){}
+					time1 = Keypad_Read();
+					LCD_Send_Chr(time1);
+					delay_ms(500);
+					while (Keypad_Read()== 0xFF){}
+					time2 = Keypad_Read();
+					LCD_Send_CMD(0x01);
+					LCD_Send_String(" 00:");
+					LCD_Send_Chr(time1);
+					LCD_Send_Chr(time2);
+					delay_ms(500);
+					while (Keypad_Read()== 0xFF){}
+					time3 = Keypad_Read();
+					LCD_Send_CMD(0x01);
+					LCD_Send_String(" 0");
+					LCD_Send_Chr(time1);
+					LCD_Send_String(":");
+					LCD_Send_Chr(time2);
+					LCD_Send_Chr(time3);
+					delay_ms(500);
+					while (Keypad_Read()== 0xFF){}
+					time4 = Keypad_Read();
+					LCD_Send_CMD(0x01);
+					LCD_Send_String(" ");
+					LCD_Send_Chr(time1);
+					LCD_Send_Chr(time2);
+					LCD_Send_String(":");
+					LCD_Send_Chr(time3);
+					LCD_Send_Chr(time4);
+					total_time = (time1 - '0') * 600 + (time2 - '0') * 60 + (time3 - '0') * 10 + (time4 - '0');
+					LCD_Move_Cursor(2,1);
+					LCD_Send_String(" Press Start !");	
+          current_state = switch_state_machine(1);
+          break;
+      }
+      last_letter = letter;
+		}
 		else if (current_state == state_oven) {
       LED_ON('F', 1);
       LED_ON('F', 2);
