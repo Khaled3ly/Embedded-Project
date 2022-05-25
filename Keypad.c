@@ -2,11 +2,14 @@
 
 
 void Keypad_Init (void){
-	// 0 -> 3 output
-	// 4 -> 7 input
-	Port_Init(Keypad_Port);
-	Set_Port_DIR (Keypad_Port,0x0F);
-	Enable_Port_PU (Keypad_Port,0xFF);
+	// C4, C5, C6, C7 -> rows output
+	// E1, E2, E3, E4 -> cols input
+	Port_Init(Keypad_Port_Rows);
+	Port_Init(Keypad_Port_Cols);
+	Set_Port_DIR (Keypad_Port_Rows,0xF0);
+	Set_Port_DIR (Keypad_Port_Cols,0x00);
+	Enable_Port_PU (Keypad_Port_Rows,0xFF);
+	Enable_Port_PU (Keypad_Port_Cols,0xFF);
 }
 
 unsigned char Keypad_Read (void){
@@ -23,10 +26,10 @@ unsigned char Keypad_Read (void){
 	int col;
 	int row;
 	for ( row = 0; row < 4; row++){
-		Write_Low_Nibble (Keypad_Port, 0xFF);
-		Write_Pin (Keypad_Port, row, 0);
+		Write_Port (Keypad_Port_Rows, 0xFF);
+		Write_Pin (Keypad_Port_Rows, row+4, 0);
 		for ( col = 0; col < 4; col++){
-			x = Read_Pin(Keypad_Port, col+4);
+			x = Read_Pin(Keypad_Port_Cols, col+1);
 			if (x == 0){
 				return_value = keymap[row][col];
 				break;
