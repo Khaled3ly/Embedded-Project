@@ -15,7 +15,13 @@ void Port_Init (unsigned char port_name){
 			while (READ_BIT(SYSCTL_PRGPIO_R,0)==0);
 			GPIO_PORTA_LOCK_R = 0x4C4F434B;
 			GPIO_PORTA_CR_R |= 0xFF;
-			GPIO_PORTA_DEN_R |= 0xFF;
+			GPIO_PORTA_DEN_R |= 0xE4;
+			GPIO_PORTA_AFSEL_R &= ~0xE4;
+			GPIO_PORTA_AMSEL_R &= ~0xE4;
+			GPIO_PORTA_PCTL_R &= ~0xE4;
+			GPIO_PORTA_DIR_R &= ~0x04;
+			GPIO_PORTA_DIR_R |= 0xE0;
+			GPIO_PORTA_DATA_R &= ~0x40;
 			break;
 
 		case 'B':
@@ -25,6 +31,10 @@ void Port_Init (unsigned char port_name){
 			GPIO_PORTB_LOCK_R = 0x4C4F434B;
 			GPIO_PORTB_CR_R |= 0xFF;
 			GPIO_PORTB_DEN_R |= 0xFF;
+			GPIO_PORTB_AFSEL_R &= ~0xFF;
+			GPIO_PORTB_AMSEL_R &= ~0xFF;
+			GPIO_PORTB_PCTL_R &= ~0xFF;
+			GPIO_PORTB_DIR_R |= 0xFF;
 			break;
 
 		case 'C':
@@ -523,11 +533,4 @@ void Write_Low_Nibble (unsigned char port_name, unsigned short int data){
 			GPIO_PORTF_DATA_R |= data;
 			break;
 	}		
-}
-
-void delay(int time)
-{
-int i, j;
-for(i = 0 ; i < time; i++)
-  for(j = 0; j < 3180; j++){}
 }
