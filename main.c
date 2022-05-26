@@ -1,5 +1,5 @@
 #include "Keypad.h"
-#include "LCD.h"
+#include "lcd.h"
 #include "LED.h"
 #include "Switch.h"
 #include "systick timer.h"
