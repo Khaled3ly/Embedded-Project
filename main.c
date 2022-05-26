@@ -34,28 +34,33 @@ unsigned char letter;
 unsigned char kilo, current_kilo;
 unsigned char time1, time2, time3, time4;
 
-int switch_state_machine(int start) {
-	static int counter = 1;
+int switch_state_machine(int start) 
+{
+  static int counter = 1;
   int current_switch_state = 0;
-	if (start == 1){
-		while ((Switch_Read('F', 0) != 0)){
-	
-		}
-		current_switch_state = state_oven;
+	if (start == 1)
+	{
+	    while ((Switch_Read('F', 0) != 0)) {}
+	    current_switch_state = state_oven;
 	}
-	else if (start == 0){
-		if (counter == 1){
-			current_switch_state = state_oven_pause;
-			counter ++;
-		}
-		else if (counter ==2){
-			current_switch_state = state_stopped;
-		}
+	else if (start == 0)
+	{
+	       if (counter == 1)
+	       {
+		    current_switch_state = state_oven_pause;
+		    counter ++;
+	       }
+		else if (counter ==2)
+	       {
+		     current_switch_state = state_stopped;
+	       }
 	}
-	else if (start == 3){
+	else if (start == 3)
+	{
 		current_switch_state = state_oven_resume; 
 	}
-	return current_switch_state;
+	
+  return current_switch_state;
 }
 
 
