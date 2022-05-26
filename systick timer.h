@@ -1,2 +1,2 @@
-void SysTick_wait(unsigned long delay);
-void genericDelay(unsigned long time);
+void SysTick_wait(unsigned long );
+void delay_ms(unsigned long );
