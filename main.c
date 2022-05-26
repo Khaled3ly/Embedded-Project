@@ -34,53 +34,8 @@ unsigned char letter;
 unsigned char kilo, current_kilo;
 unsigned char time1, time2, time3, time4;
 
-int switch_state_machine(int start) 
-{
-  static int counter = 1;
-  int current_switch_state = 0;
-	if (start == 1)
-	{
-	    while ((Switch_Read('F', 0) != 0)) {}
-	    current_switch_state = state_oven;
-	}
-	else if (start == 0)
-	{
-	       if (counter == 1)
-	       {
-		    current_switch_state = state_oven_pause;
-		    counter ++;
-	       }
-		else if (counter ==2)
-	       {
-		     current_switch_state = state_stopped;
-	       }
-	}
-	else if (start == 3)
-	{
-		current_switch_state = state_oven_resume; 
-	}
-	
-  return current_switch_state;
-}
-
-
-
-void Initialize (void)
-{
-	LCD_Init();
-	Keypad_Init();
-	
-	LED_Init('F',1);
-	LED_Init('F',2);
-	LED_Init('F',3);
-	LED_Init('E',5); // Buzzer
-	LED_OFF('E',5);
-	
-	Switch_Init('F',0);
-	Switch_Init('F',4);
-	Switch_Init('A',2); //External Switch
-}
-
+int switch_state_machine(int start) ;
+void Initialize (void) ;
 
 int main(void) 
 {
@@ -374,3 +329,51 @@ int main(void)
         prev_state = current_state;
   }
 }
+
+int switch_state_machine(int start) 
+{
+  static int counter = 1;
+  int current_switch_state = 0;
+	if (start == 1)
+	{
+	    while ((Switch_Read('F', 0) != 0)) {}
+	    current_switch_state = state_oven;
+	}
+	else if (start == 0)
+	{
+	       if (counter == 1)
+	       {
+		    current_switch_state = state_oven_pause;
+		    counter ++;
+	       }
+		else if (counter ==2)
+	       {
+		     current_switch_state = state_stopped;
+	       }
+	}
+	else if (start == 3)
+	{
+		current_switch_state = state_oven_resume; 
+	}
+	
+  return current_switch_state;
+}
+
+
+
+void Initialize (void)
+{
+	LCD_Init();
+	Keypad_Init();
+	
+	LED_Init('F',1);
+	LED_Init('F',2);
+	LED_Init('F',3);
+	LED_Init('E',5); // Buzzer
+	LED_OFF('E',5);
+	
+	Switch_Init('F',0);
+	Switch_Init('F',4);
+	Switch_Init('A',2); //External Switch
+}
+
