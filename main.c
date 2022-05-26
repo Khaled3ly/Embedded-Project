@@ -61,21 +61,22 @@ int main(void)
          switch (letter)
        {
            case 'A':
-					LCD_Send_CMD(0x01);
+	  LCD_Send_CMD(0x01);
           LCD_Send_String(" Popcorn");		
-					LCD_Move_Cursor(2,1);
-					LCD_Send_String("Press Start !");	
+	  LCD_Move_Cursor(2,1);
+	  LCD_Send_String("Press Start !");	
           current_state = switch_state_machine(1);
           break;
 
            case 'B':
-					LCD_Send_CMD(0x01);
+	  LCD_Send_CMD(0x01);
           LCD_Send_String(" Beef Weight?");
-					delay_ms(200);
-				  while (Keypad_Read()== 0xFF){}
-					kilo = Keypad_Read();
+	  delay_ms(200);
+	  while (Keypad_Read()== 0xFF){}
+	  kilo = Keypad_Read();
 
-          if (kilo > '0' && kilo <= '9') {		
+          if (kilo > '0' && kilo <= '9') 
+	  {		
             LCD_Send_CMD(0x01);
             LCD_Send_String(" Beef Weight: ");
 						LCD_Send_Chr(kilo);
@@ -84,24 +85,26 @@ int main(void)
 						LCD_Send_String(" Press Start !");	
             last_kilo = kilo - '0';
 						current_state = switch_state_machine(1);
-
-          } else {
+	  } 
+	    else 
+	   {
             LCD_Send_CMD(0x01);
             LCD_Send_String(" err");
             delay_ms(2000);
             LCD_Send_CMD(0x01);
-						current_state = state_oven_operation;
-          }
+	    current_state = state_oven_operation;
+           }
           break;
 
            case 'C':
-					LCD_Send_CMD(0x01);
+	  LCD_Send_CMD(0x01);
           LCD_Send_String(" Chicken Weight?");
-					delay_ms(200);
-				  while (Keypad_Read()== 0xFF){}
-					kilo = Keypad_Read();
+	  delay_ms(200);
+	  while (Keypad_Read()== 0xFF){}
+	  kilo = Keypad_Read();
 
-          if (kilo > '0' && kilo <= '9') {		
+          if (kilo > '0' && kilo <= '9') 
+	  {		
             LCD_Send_CMD(0x01);
             LCD_Send_String(" Chicken Weight:");
 						LCD_Send_Chr(kilo);
@@ -111,12 +114,14 @@ int main(void)
             last_kilo = kilo - '0';
 						current_state = switch_state_machine(1);
 
-          } else {
+          } 
+	  else 
+	  {
             LCD_Send_CMD(0x01);
             LCD_Send_String(" err");
             delay_ms(2000);
             LCD_Send_CMD(0x01);
-						current_state = state_oven_operation;
+	    current_state = state_oven_operation;
           }
           break;
 
@@ -175,20 +180,24 @@ int main(void)
       {
 	int value;
         for (value = 60; value > 0; value--){
-          if (Switch_Read('F', 4) == 0){     // Pause
-					current_state = switch_state_machine(0);
-          if (current_state == state_oven_pause) {
+          if (Switch_Read('F', 4) == 0) // Pause
+	  {     
+	   current_state = switch_state_machine(0);
+          if (current_state == state_oven_pause) 
+	  {
            pause_time = value;
            break;
-						}
+	   }
           }
           LCD_Send_CMD(0x01);
           LCD_Send_String(" Time Left: ");
           LCD_Move_Cursor(1, 11);
-					LCD_Send_Int(value);
+	  LCD_Send_Int(value);
           delay_ms(1000);
           LCD_Send_CMD(0x01);
-	if (Switch_Read('A', 2) != 0){   // Door
+		
+	if (Switch_Read('A', 2) != 0) // Door
+	{   
 	pause_time = value;
 	current_state = switch_state_machine(0);
 	break;
@@ -198,15 +207,19 @@ int main(void)
 	}
         }
       }
-		else if (last_letter == 'B') {
-		int value;
-        for (value = (30*last_kilo); value > 0; value--){
+	   
+	else if (last_letter == 'B') 
+	{
+	int value;
+        for (value = (30*last_kilo); value > 0; value--)
+	{
           if (Switch_Read('F', 4) == 0){
 	current_state = switch_state_machine(0);
-          if (current_state == state_oven_pause) {
+          if (current_state == state_oven_pause) 
+	  {
            pause_time = value;
            break;
-						}
+	  }
           }
           LCD_Send_CMD(0x01);
           LCD_Send_String(" Time Left: ");
@@ -214,50 +227,60 @@ int main(void)
 					LCD_Send_Int(value);
           delay_ms(1000);
           LCD_Send_CMD(0x01);
-					if (Switch_Read('A', 2) != 0){
-					pause_time = value;
-					current_state = switch_state_machine(0);
-					break;
-					}
-					if (value == 1){
-						current_state = state_stopped;
-					}
+	if (Switch_Read('A', 2) != 0){
+	pause_time = value;
+	current_state = switch_state_machine(0);
+	break;
+	}
+	if (value == 1)
+	{
+	current_state = state_stopped;
+	}
         }
       }
-			else if (last_letter == 'C') {
-				int value;
-        for (value = (12*last_kilo); value > 0; value--){
+	   
+	else if (last_letter == 'C') 
+	{
+	int value;
+        for (value = (12*last_kilo); value > 0; value--)
+	{
           if (Switch_Read('F', 4) == 0){
 					current_state = switch_state_machine(0);
-          if (current_state == state_oven_pause) {
+          if (current_state == state_oven_pause) 
+	  {
            pause_time = value;
            break;
-						}
+	}
           }
           LCD_Send_CMD(0x01);
           LCD_Send_String(" Time Left: ");
           LCD_Move_Cursor(1, 11);
-					LCD_Send_Int(value);
+	  LCD_Send_Int(value);
           delay_ms(1000);
           LCD_Send_CMD(0x01);
-					if (Switch_Read('A', 2) != 0){\
-					pause_time = value;
-					current_state = switch_state_machine(0);
-					break;
-					}
-					if (value == 1){
-						current_state = state_stopped;
-					}
+	if (Switch_Read('A', 2) != 0) //
+	{
+	pause_time = value;
+	current_state = switch_state_machine(0);
+	break;
+	}
+	if (value == 1){
+	current_state = state_stopped;
+	}
         }
       }
-      else if (last_letter == 'D') {
-				  for (total_time; total_time > 0; total_time--){
+      else if (last_letter == 'D') 
+      {
+		for (total_time; total_time > 0; total_time--)
+		 {
           if (Switch_Read('F', 4) == 0){     // Pause
-					current_state = switch_state_machine(0);
-          if (current_state == state_oven_pause) {
+		 
+	current_state = switch_state_machine(0);
+          if (current_state == state_oven_pause) 
+	  {
            pause_time = total_time;
            break;
-						}
+		}
           }
           LCD_Send_CMD(0x01);
           LCD_Send_String(" Time Left: ");
