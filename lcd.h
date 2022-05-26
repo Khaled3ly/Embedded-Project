@@ -1,5 +1,5 @@
-#ifndef LCD_H_  
-#define LCD_H_
+#ifndef lcd_H_  
+#define lcd_H_
 #include "Drivers.h"
 #include "tm4c123gh6pm.h"
 #include <stdio.h> 
